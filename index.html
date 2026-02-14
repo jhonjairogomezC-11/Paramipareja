@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Propuesta de San Valentín ❤️</title>
+    <link rel="stylesheet" href="menu.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <!-- Video de fondo -->
+    <video autoplay muted loop playsinline id="videoFondo">
+        <source src="video.mp4" type="video/mp4">
+        Tu navegador no soporta videos.
+    </video>
+
+    <!-- Capa oscura encima del video para que resalte el contenido -->
+    <div class="overlay"></div>
+
+    <div class="contenedor">
+        <h1>💌Mi Propuesta de San Valentín💌</h1>
+        <p class="sub">
+            Tengo 3 cosas preparadas para ti... pero no todas se pueden ver todavía 😏💖
+        </p>
+
+        <div class="contador">
+            <h2>⏳ Cuenta regresiva para San Valentín</h2>
+
+            <div class="reloj">
+                <div class="bloque">
+                    <span id="dias">00</span>
+                    <p>Días</p>
+                </div>
+
+                <div class="bloque">
+                    <span id="horas">00</span>
+                    <p>Horas</p>
+                </div>
+
+                <div class="bloque">
+                    <span id="minutos">00</span>
+                    <p>Min</p>
+                </div>
+
+                <div class="bloque">
+                    <span id="segundos">00</span>
+                    <p>Seg</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="opciones">
+            <button id="btnSanValentin">¿Quieres ser mi San Valentín?</button>
+            <button id="btnCarta" disabled>📜 Carta para ti</button>
+            <button id="btnJuego" disabled>🧩 Encuentra nuestros momentos</button>
+        </div>
+    </div>
+
+    <!-- Ventana modal -->
+    <div id="modal" class="modal oculto">
+        <div class="modal-contenido">
+            <button id="cerrarModal" class="cerrar">❌ Cerrar</button>
+            <iframe id="iframeProyecto" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script src="menu.js"></script>
+</body>
+</html>
