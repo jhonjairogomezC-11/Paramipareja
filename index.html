@@ -6,7 +6,6 @@
     <title>Mi Propuesta de San Valentín ❤️</title>
     <link rel="stylesheet" href="menu.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-
 </head>
 <body>
 
@@ -51,15 +50,15 @@
             </div>
         </div>
 
-
         <div class="opciones">
             <button id="btnSanValentin">¿Quieres ser mi San Valentín?</button>
             <button id="btnCarta" disabled>📜 Carta para ti</button>
             <button id="btnJuego" disabled>🧩 Encuentra nuestros momentos</button>
+            <button id="btnRegalo" disabled>🎁 Abre tu regalo</button>
         </div>
     </div>
 
-    <!-- Ventana modal -->
+    <!-- Ventana modal para proyectos (carta, juego, etc) -->
     <div id="modal" class="modal oculto">
         <div class="modal-contenido">
             <button id="cerrarModal" class="cerrar">❌ Cerrar</button>
@@ -67,6 +66,53 @@
         </div>
     </div>
 
+    <!-- Modal del Regalo -->
+    <div id="modalRegalo" class="modal oculto">
+        <div class="modal-contenido regalo-contenido">
+            <button id="cerrarRegalo" class="cerrar">❌ Cerrar</button>
+            
+            <h2>🎁 Un regalo especial para ti 🎁</h2>
+            
+           <div class="contenedor-regalo">
+                <img src="regalo.png" class="img-regalo" id="imgRegalo" alt="Regalo">
+            </div>
+            
+            <p class="pregunta">¿Tienes regalo para tu novio? </p>
+            
+            <div class="botones-regalo">
+                <button id="btnSi">Sí 💖</button>
+                <button id="btnNo">No 😔</button>
+            </div>
+            
+            <p id="mensajeFinal" class="mensajeFinal oculto"></p>
+        </div>
+    </div>
+
+    <!-- Audios -->
+    <audio id="cancionFeliz">
+        <source src="musica/feliz.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="cancionTriste">
+        <source src="musica/triste.mp3" type="audio/mpeg">
+    </audio>
+
+        <!-- Modal de Contraseña -->
+    <div id="modalContrasena" class="modal-contrasena oculto">
+        <div class="contenido-contrasena">
+            <h3>🔒 Contraseña Requerida</h3>
+            <p>Ingresa la contraseña para abrir tu regalo:</p>
+            <input type="password" id="inputContrasena" placeholder="Escribe aquí..." maxlength="20">
+            <p id="errorContrasena" class="error-contrasena oculto"></p>
+            <div class="botones-contrasena">
+                <button class="btn-confirmar" id="btnConfirmarContrasena">✓ Confirmar</button>
+                <button class="btn-cancelar" id="btnCancelarContrasena">✗ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="menu.js"></script>
+
+
 </body>
 </html>

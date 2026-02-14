@@ -12,66 +12,61 @@ const modal = document.getElementById("modal");
 const iframeProyecto = document.getElementById("iframeProyecto");
 const cerrarModal = document.getElementById("cerrarModal");
 
-const tiempo = document.getElementById("tiempo");
 
-// Fecha objetivo: PRUEBA (YA MISMO)
-const fechaSanValentin = new Date();
+const modalRegalo = document.getElementById("modalRegalo");
+const cerrarRegalo = document.getElementById("cerrarRegalo");
+const btnSi = document.getElementById("btnSi");
+const btnNo = document.getElementById("btnNo");
+const mensajeFinal = document.getElementById("mensajeFinal");
+const cancionFeliz = document.getElementById("cancionFeliz");
+const cancionTriste = document.getElementById("cancionTriste");
 
-// ================================
-// ABRIR MODAL CON IFRAME
-// ================================
+
+// Obtener elementos (con validación)
+const modalContrasena = document.getElementById("modalContrasena");
+const inputContrasena = document.getElementById("inputContrasena");
+const btnConfirmarContrasena = document.getElementById("btnConfirmarContrasena");
+const btnCancelarContrasena = document.getElementById("btnCancelarContrasena");
+const errorContrasena = document.getElementById("errorContrasena");
+const CONTRASENA_CORRECTA = "burbuja";
+
+
+
+// Fecha objetivo: 14 de febrero 2026 (00:00)
+const fechaSanValentin = new Date(Date.now() - 1000);
+
+
+// PARA PRUEBAS: Descomenta la siguiente línea para simular que ya es San Valentín
+// const fechaSanValentin = new Date(Date.now() - 1000); // Hace que el tiempo ya haya pasado
+
+// Abrir modal con iframe
 function abrirProyecto(ruta) {
     iframeProyecto.src = ruta;
     modal.classList.remove("oculto");
 }
 
-// Cerrar modal normal
+// Cerrar modal
 cerrarModal.addEventListener("click", () => {
     modal.classList.add("oculto");
     iframeProyecto.src = "";
 });
 
-// ================================
-// FUNCIONES LOCALSTORAGE (DESBLOQUEOS)
-// ================================
-function guardarProgreso(clave) {
-    localStorage.setItem(clave, "true");
-    verificarDesbloqueos();
-}
-
-function verificarDesbloqueos() {
-    const sanValentin = localStorage.getItem("sanValentin") === "true";
-    const carta = localStorage.getItem("carta") === "true";
-    const juego = localStorage.getItem("juego") === "true";
-    const tiempoFinalizado = localStorage.getItem("tiempoFinalizado") === "true";
-
-    if (sanValentin) {
-        btnCarta.disabled = false;
-    }
-
-    if (carta) {
-        btnJuego.disabled = false;
-    }
-
-    if (sanValentin && carta && juego && tiempoFinalizado) {
-        btnRegalo.disabled = false;
-    }
-}
-
-// ================================
-// CONTADOR
-// ================================
+// Función para actualizar el contador y desbloquear botones
 function actualizarContador() {
     const ahora = new Date();
     const diferencia = fechaSanValentin - ahora;
 
     if (diferencia <= 0) {
-        tiempo.innerHTML = "🎉 ¡Ya es San Valentín! Ya puedes ver todo 💖";
-
-        // Guardar que el tiempo terminó
-        localStorage.setItem("tiempoFinalizado", "true");
-
-        verificarDesbloqueos();
+        // Mostrar todos los valores en 00
+        diasElemento.textContent = "00";
+        horasElemento.textContent = "00";
+        minutosElemento.textContent = "00";
+        segundosElemento.textContent = "00";
+        
+        // Desbloquear TODOS los botones cuando llegue San Valentín
+        btnCarta.disabled = false;
+        btnJuego.disabled = false;
+        btnRegalo.disabled = false;
         return;
     }
 
@@ -90,86 +85,152 @@ function actualizarContador() {
 setInterval(actualizarContador, 1000);
 actualizarContador();
 
-// ================================
-// EVENTOS BOTONES PRINCIPALES
-// ================================
+// Eventos de botones
 btnSanValentin.addEventListener("click", () => {
     abrirProyecto("San valentin mensaje/index.html");
-    guardarProgreso("sanValentin");
 });
 
 btnCarta.addEventListener("click", () => {
     abrirProyecto("Carta de Amor/index.html");
-    guardarProgreso("carta");
 });
 
 btnJuego.addEventListener("click", () => {
     abrirProyecto("Encuentra las parejas/index.html");
-    guardarProgreso("juego");
 });
 
-// ================================
-// MODAL REGALO (A PRUEBA DE ERRORES)
-// ================================
-const modalRegalo = document.getElementById("modalRegalo");
-const cerrarRegalo = document.getElementById("cerrarRegalo");
-const btnSi = document.getElementById("btnSi");
-const btnNo = document.getElementById("btnNo");
-const mensajeFinal = document.getElementById("mensajeFinal");
-const imgRegalo = document.getElementById("imgRegalo");
 
-const cancionFeliz = document.getElementById("cancionFeliz");
-const cancionTriste = document.getElementById("cancionTriste");
 
-// Si existen los elementos del regalo, entonces sí asignamos eventos
-if (modalRegalo && cerrarRegalo && btnSi && btnNo && mensajeFinal && imgRegalo && cancionFeliz && cancionTriste) {
 
-    btnRegalo.addEventListener("click", () => {
+
+
+
+
+
+
+
+
+// Evento para abrir el modal del regalo (requiere contraseña)
+btnRegalo.addEventListener("click", () => {
+    console.log("Click en botón regalo detectado");
+    modalContrasena.classList.remove("oculto");
+    inputContrasena.value = "";
+    if (errorContrasena) {
+        errorContrasena.classList.add("oculto");
+    }
+    setTimeout(() => {
+        inputContrasena.focus();
+    }, 100);
+});
+
+
+
+
+
+
+// Cerrar modal del regalo
+cerrarRegalo.addEventListener("click", () => {
+    modalRegalo.classList.add("oculto");
+    mensajeFinal.classList.add("oculto");
+    cancionFeliz.pause();
+    cancionTriste.pause();
+    cancionFeliz.currentTime = 0;
+    cancionTriste.currentTime = 0;
+});
+
+
+
+
+// Respuesta "Sí" - reproduce canción inmediatamente y cuenta regresiva de 75 segundos
+btnSi.addEventListener("click", () => {
+    // Pausar canción triste por si acaso
+    cancionTriste.pause();
+    cancionTriste.currentTime = 0;
+    
+    // Reproducir canción feliz INMEDIATAMENTE
+    cancionFeliz.currentTime = 0;
+    cancionFeliz.play();
+    
+    // Crear elemento de cuenta regresiva desde 75 segundos
+    let contador = 75;
+    mensajeFinal.innerHTML = `<div class="cuenta-regresiva">${contador}</div>`;
+    mensajeFinal.classList.remove("oculto");
+    
+    // Deshabilitar botones durante la cuenta regresiva
+    btnSi.disabled = true;
+    btnNo.disabled = true;
+    
+    // Iniciar cuenta regresiva
+    const intervalo = setInterval(() => {
+        contador--;
+        if (contador > 0) {
+            mensajeFinal.innerHTML = `<div class="cuenta-regresiva">${contador}</div>`;
+        } else {
+            clearInterval(intervalo);
+            // Mostrar mensaje final cuando llegue a 0
+            mensajeFinal.innerHTML = "¡Eso me hace tan feliz! 💖😊 ¡Te amo mucho!";
+            // Rehabilitar botones
+            btnSi.disabled = false;
+            btnNo.disabled = false;
+        }
+    }, 1000);
+});
+
+// Respuesta "No"
+btnNo.addEventListener("click", () => {
+    mensajeFinal.textContent = "Ay no 😢💔 Ya no mereces tu regalo.";
+    mensajeFinal.classList.remove("oculto");
+    cancionFeliz.pause();
+    cancionTriste.play();
+});
+
+// ========== FUNCIONES DE CONTRASEÑA ==========
+
+// Función para verificar contraseña
+function verificarContrasena() {
+    if (!inputContrasena || !modalContrasena || !modalRegalo) return;
+    
+    const contrasenaIngresada = inputContrasena.value.trim().toLowerCase();
+    
+    if (contrasenaIngresada === CONTRASENA_CORRECTA) {
+        // Contraseña correcta
+        modalContrasena.classList.add("oculto");
         modalRegalo.classList.remove("oculto");
-    });
-
-    cerrarRegalo.addEventListener("click", () => {
-        modalRegalo.classList.add("oculto");
-        reiniciarRegalo();
-    });
-
-    btnSi.addEventListener("click", () => {
-        detenerCanciones();
-
-        mensajeFinal.classList.remove("oculto");
-        mensajeFinal.innerHTML = "💖 Con mucho amor para ti... Feliz San Valentín 💝✨";
-
-        cancionFeliz.play();
-        imgRegalo.src = "imagenes/regaloAbierto.png";
-    });
-
-    btnNo.addEventListener("click", () => {
-        detenerCanciones();
-
-        mensajeFinal.classList.remove("oculto");
-        mensajeFinal.innerHTML = "😢 Ay no... eso me puso triste...";
-
-        cancionTriste.play();
-        imgRegalo.src = "imagenes/triste.png";
-    });
-
-    function detenerCanciones() {
-        cancionFeliz.pause();
-        cancionFeliz.currentTime = 0;
-
-        cancionTriste.pause();
-        cancionTriste.currentTime = 0;
+        inputContrasena.value = "";
+        if (errorContrasena) {
+            errorContrasena.classList.add("oculto");
+        }
+    } else {
+        // Contraseña incorrecta
+        if (errorContrasena) {
+            errorContrasena.textContent = "❌ Contraseña incorrecta. Intenta de nuevo.";
+            errorContrasena.classList.remove("oculto");
+        }
+        inputContrasena.value = "";
+        inputContrasena.focus();
     }
-
-    function reiniciarRegalo() {
-        detenerCanciones();
-        mensajeFinal.classList.add("oculto");
-        imgRegalo.src = "imagenes/regalo.png";
-    }
-
-} else {
-    console.warn("⚠️ No se encontró el modal del regalo o sus elementos. Revisa el HTML.");
 }
 
-// Ejecutar desbloqueos al cargar
-verificarDesbloqueos();
+// Eventos de contraseña
+if (btnConfirmarContrasena) {
+    btnConfirmarContrasena.addEventListener("click", verificarContrasena);
+}
+
+if (inputContrasena) {
+    inputContrasena.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            verificarContrasena();
+        }
+    });
+}
+
+if (btnCancelarContrasena && modalContrasena) {
+    btnCancelarContrasena.addEventListener("click", () => {
+        modalContrasena.classList.add("oculto");
+        if (inputContrasena) {
+            inputContrasena.value = "";
+        }
+        if (errorContrasena) {
+            errorContrasena.classList.add("oculto");
+        }
+    });
+}
