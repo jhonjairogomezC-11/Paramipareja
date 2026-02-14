@@ -1,7 +1,7 @@
 const btnCarta = document.getElementById("btnCarta");
 const btnJuego = document.getElementById("btnJuego");
 const btnSanValentin = document.getElementById("btnSanValentin");
-
+const btnRegalo = document.getElementById("btnRegalo");
 
 const diasElemento = document.getElementById("dias");
 const horasElemento = document.getElementById("horas");
@@ -14,30 +14,64 @@ const cerrarModal = document.getElementById("cerrarModal");
 
 const tiempo = document.getElementById("tiempo");
 
-// Fecha objetivo: 14 de febrero 2026 (00:00)
-const fechaSanValentin = new Date("2026-02-14T00:00:00");
+// Fecha objetivo: PRUEBA (YA MISMO)
+const fechaSanValentin = new Date();
 
-// Abrir modal con iframe
+// ================================
+// ABRIR MODAL CON IFRAME
+// ================================
 function abrirProyecto(ruta) {
     iframeProyecto.src = ruta;
     modal.classList.remove("oculto");
 }
 
-// Cerrar modal
+// Cerrar modal normal
 cerrarModal.addEventListener("click", () => {
     modal.classList.add("oculto");
     iframeProyecto.src = "";
 });
 
-// Función para actualizar el contador y desbloquear botones
+// ================================
+// FUNCIONES LOCALSTORAGE (DESBLOQUEOS)
+// ================================
+function guardarProgreso(clave) {
+    localStorage.setItem(clave, "true");
+    verificarDesbloqueos();
+}
+
+function verificarDesbloqueos() {
+    const sanValentin = localStorage.getItem("sanValentin") === "true";
+    const carta = localStorage.getItem("carta") === "true";
+    const juego = localStorage.getItem("juego") === "true";
+    const tiempoFinalizado = localStorage.getItem("tiempoFinalizado") === "true";
+
+    if (sanValentin) {
+        btnCarta.disabled = false;
+    }
+
+    if (carta) {
+        btnJuego.disabled = false;
+    }
+
+    if (sanValentin && carta && juego && tiempoFinalizado) {
+        btnRegalo.disabled = false;
+    }
+}
+
+// ================================
+// CONTADOR
+// ================================
 function actualizarContador() {
     const ahora = new Date();
     const diferencia = fechaSanValentin - ahora;
 
     if (diferencia <= 0) {
         tiempo.innerHTML = "🎉 ¡Ya es San Valentín! Ya puedes ver todo 💖";
-        btnCarta.disabled = false;
-        btnJuego.disabled = false;
+
+        // Guardar que el tiempo terminó
+        localStorage.setItem("tiempoFinalizado", "true");
+
+        verificarDesbloqueos();
         return;
     }
 
@@ -52,20 +86,90 @@ function actualizarContador() {
     segundosElemento.textContent = segundos.toString().padStart(2, "0");
 }
 
-
 // Ejecutar contador
 setInterval(actualizarContador, 1000);
 actualizarContador();
 
-// Eventos de botones
+// ================================
+// EVENTOS BOTONES PRINCIPALES
+// ================================
 btnSanValentin.addEventListener("click", () => {
     abrirProyecto("San valentin mensaje/index.html");
+    guardarProgreso("sanValentin");
 });
 
 btnCarta.addEventListener("click", () => {
     abrirProyecto("Carta de Amor/index.html");
+    guardarProgreso("carta");
 });
 
 btnJuego.addEventListener("click", () => {
     abrirProyecto("Encuentra las parejas/index.html");
+    guardarProgreso("juego");
 });
+
+// ================================
+// MODAL REGALO (A PRUEBA DE ERRORES)
+// ================================
+const modalRegalo = document.getElementById("modalRegalo");
+const cerrarRegalo = document.getElementById("cerrarRegalo");
+const btnSi = document.getElementById("btnSi");
+const btnNo = document.getElementById("btnNo");
+const mensajeFinal = document.getElementById("mensajeFinal");
+const imgRegalo = document.getElementById("imgRegalo");
+
+const cancionFeliz = document.getElementById("cancionFeliz");
+const cancionTriste = document.getElementById("cancionTriste");
+
+// Si existen los elementos del regalo, entonces sí asignamos eventos
+if (modalRegalo && cerrarRegalo && btnSi && btnNo && mensajeFinal && imgRegalo && cancionFeliz && cancionTriste) {
+
+    btnRegalo.addEventListener("click", () => {
+        modalRegalo.classList.remove("oculto");
+    });
+
+    cerrarRegalo.addEventListener("click", () => {
+        modalRegalo.classList.add("oculto");
+        reiniciarRegalo();
+    });
+
+    btnSi.addEventListener("click", () => {
+        detenerCanciones();
+
+        mensajeFinal.classList.remove("oculto");
+        mensajeFinal.innerHTML = "💖 Con mucho amor para ti... Feliz San Valentín 💝✨";
+
+        cancionFeliz.play();
+        imgRegalo.src = "imagenes/regaloAbierto.png";
+    });
+
+    btnNo.addEventListener("click", () => {
+        detenerCanciones();
+
+        mensajeFinal.classList.remove("oculto");
+        mensajeFinal.innerHTML = "😢 Ay no... eso me puso triste...";
+
+        cancionTriste.play();
+        imgRegalo.src = "imagenes/triste.png";
+    });
+
+    function detenerCanciones() {
+        cancionFeliz.pause();
+        cancionFeliz.currentTime = 0;
+
+        cancionTriste.pause();
+        cancionTriste.currentTime = 0;
+    }
+
+    function reiniciarRegalo() {
+        detenerCanciones();
+        mensajeFinal.classList.add("oculto");
+        imgRegalo.src = "imagenes/regalo.png";
+    }
+
+} else {
+    console.warn("⚠️ No se encontró el modal del regalo o sus elementos. Revisa el HTML.");
+}
+
+// Ejecutar desbloqueos al cargar
+verificarDesbloqueos();
